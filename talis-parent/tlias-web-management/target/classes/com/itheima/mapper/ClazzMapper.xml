@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.ClazzMapper">
+
+    <!--    根据条件班级分页查询-->
+    <select id="list" resultType="com.itheima.pojo.Clazz">
+        select c.*,e.name masterName
+        from clazz c left join emp e on c.master_id=e.id
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND c.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="beginDate != null">
+            AND begin_date = #{beginDate}
+        </if>
+        <if test="endDate != null">
+            AND end_date = #{endDate}
+        </if>
+        ORDER BY create_time
+    </select>
+    <insert id="insert">
+        INSERT INTO clazz(name,room,begin_date,end_date,master_id,subject,create_time,update_time)
+        VALUES (#{name},#{room},#{beginDate},#{endDate},#{masterId},#{subject},#{createTime},#{updateTime})
+    </insert>
+<!--    修改班级信息-->
+    <update id="update">
+        UPDATE clazz
+        <set>
+            <if test="name != null and name != ''">name=#{name},</if>
+            <if test="room != null and room != ''">room=#{room},</if>
+            <if test="beginDate != null">begin_date=#{beginDate},</if>
+            <if test="endDate != null">end_date=#{endDate},</if>
+            <if test="masterId != null">master_id=#{masterId},</if>
+            <if test="subject != null">subject=#{subject},</if>
+            update_time=#{updateTime}
+        </set>
+        WHERE id=#{id}
+    </update>
+</mapper>
+
